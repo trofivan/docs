@@ -3,6 +3,7 @@ import { TerminalInput } from '~/components/text/terminal'
 import { InlineCode } from '~/components/text/code'
 import Caption from '~/components/text/caption'
 import Note from '~/components/text/note'
+import { GenericLink } from '~/components/text/link'
 
 export const meta = {
   title: 'Deploying a VueJS application to Now',
@@ -89,11 +90,20 @@ Lastly, we'll add a script in `package.json` to specify what command Now will ru
   A <InlineCode>package.json</InlineCode> file.
 </Caption>
 
-`npm run build` createa a folder called `dist` which Now identifies as the static folder.
+`npm run build` creates a folder called `dist` which Now identifies as the static folder.
+
+<Note>
+  Don't forget to exclude the <InlineCode>node_modules</InlineCode> folder from
+  being uploaded to Now to enable faster deployment. To do that, add a{' '}
+  <GenericLink href="/docs/v2/deployments/ignoring-source-paths">
+    .nowignore
+  </GenericLink>{' '}
+  file to the root of the project directory and add{' '}
+  <InlineCode>node_modules</InlineCode> to it.
+</Note>
 
 We are now ready to deploy the app.
 
 <TerminalInput>now</TerminalInput>
 
-export default ({ children }) => <Guide meta={meta}>{children}</Guide
->
+export default ({ children }) => <Guide meta={meta}>{children}</Guide>
