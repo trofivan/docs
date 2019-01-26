@@ -1,0 +1,99 @@
+import Guide from '~/components/layout/guide'
+import { TerminalInput } from '~/components/text/terminal'
+import { InlineCode } from '~/components/text/code'
+import Caption from '~/components/text/caption'
+import Note from '~/components/text/note'
+
+export const meta = {
+  title: 'Deploying a VueJS application to Now',
+  description: 'How to deploy your VueJS application to Now',
+  published: '2019-01-26T03:00:00.860Z',
+  authors: ['unicodeveloper'],
+  url: '/guides/deploying-vuejs-to-now'
+}
+
+VueJS is an open source JavaScript framework for building user interfaces. It's popularly known for its gentle learning curve and adopted by a lot of developers crafting single page applications around the world.
+
+In this guide, we'll cover how to deploy a VueJS application to ZEIT Now with ease.
+
+## Step 1: Project Setup
+
+We'll use the [official Vue CLI](https://github.com/vuejs/vue-cli) to quickly scaffold a batteries-included VueJS Single Page Application.
+
+<Note>
+  If you don't have the Vue CLI installed globally, use this command to install
+  it:
+  <TerminalInput>yarn global add @vue/cli</TerminalInput>
+</Note>
+
+After a successful installation, create a new project and `cd` into the project folder. Use the following command:
+
+<TerminalInput>vue create new-project && cd new-project</TerminalInput>
+
+An option to choose a preset will be made available in your terminal after running the command above.
+
+Pick the `default` option. After choosing this option, the Vue CLI installs all the required dependencies and provisions a new project for you.
+
+We can run our new VueJS application now. However, let's add a routing feature to the app.
+
+Install the [official VueJS router](https://router.vuejs.org/) by running the following command in your terminal:
+
+<TerminalInput>vue add router</TerminalInput>
+
+The Vue CLI adds the router to the project and automatically updates the project files with a basic routing functionality.
+
+## Step 2: Deploy VueJS app to Now
+
+We are ready to deploy our VueJS app to Now. If you have not yet installed Now, you can do so by installing the [Now Desktop app](/docs/v2/getting-started/installation/#now-desktop) which installs Now CLI automatically, or by [installing Now CLI](/docs/v2/getting-started/installation/#now-cli) directly.
+
+First, we need to create a [`now.json` configuration file](https://zeit.co/docs/v2/deployments/configuration) file to instruct Now on how to build the project.
+
+Next, we need to define each builders we would like to use. [Builders](https://zeit.co/docs/v2/deployments/builders/overview/) are modules that take a deployment's source and return an output, consisting of [either static files or dynamic Lambdas](https://zeit.co/docs/v2/deployments/builds/#sources-and-outputs).
+
+We'll use `@now/static-build` to build and deploy our Vue application selecting the `package.json` as our entry point. The `routes` property makes sure requests like `/non-existent-page` are routed to the Vue `index.html`.
+
+```js
+{
+    "version": 2,
+    "name": "vue",
+    "builds": [
+        { "src": "package.json", "use": "@now/static-build" }
+    ],
+    "routes": [
+      {"src": "^/js/(.*)", "dest": "/js/$1"},
+      {"src": "^/css/(.*)", "dest": "/css/$1"},
+      {"src": "^/img/(.*)", "dest": "/img/$1"},
+      {"src": ".*", "dest": "/index.html"}
+    ]
+}
+```
+
+<Caption>
+  A <InlineCode>now.json</InlineCode> configuration file that specifies a
+  Builder.
+</Caption>
+
+Lastly, we'll add a script in `package.json` to specify what command Now will run to "build" the app in the cloud.
+
+```js
+{
+    "scripts": {
+      ...
+      "build": "vue-cli-service build",
+      "now-build": "npm run build",
+    },
+}
+```
+
+<Caption>
+  A <InlineCode>package.json</InlineCode> file.
+</Caption>
+
+`npm run build` createa a folder called `dist` which Now identifies as the static folder.
+
+We are now ready to deploy the app.
+
+<TerminalInput>now</TerminalInput>
+
+export default ({ children }) => <Guide meta={meta}>{children}</Guide
+>
