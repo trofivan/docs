@@ -7,6 +7,7 @@ import Caption from '~/components/text/caption'
 import Note from '~/components/text/note'
 import Example from '~/components/example'
 import Tag from '~/components/text/tag'
+import Card from '~/components/card'
 
 export const meta = {
   title: 'Wordpress Builder (@now/wordpress)',
@@ -16,7 +17,7 @@ export const meta = {
 
 <Tag>Status: Beta</Tag>
 
-The `@now/wordpress` builder takes in a `wp-config.php` file as an entry point, builds its dependencies, and outputs it as a [Lambda](/docs/v2/deployments/concepts/lambdas).
+The `@now/wordpress` builder takes in a `wp-config.php` file as an entry point, installs wordpress, and outputs it as a [Lambda](/docs/v2/deployments/concepts/lambdas).
 
 ## When to use it
 
@@ -27,13 +28,13 @@ Whenever you want to quickly create a Wordpress site.
 Define these two files within a folder like so:
 
 - `ca.pem` - A source file that contains the private key for securely connecting to a hosted MySQL database.
-- `wp-config.php` - A configuration file.
+- `wp-config.php` - A configuration file for Wordpress.
 
-Define the `ca.pem` source file by copying the contents of your `SSL CA cert` from your MySQL hosting service to the file.
+Define the `ca.pem` source file by copying the contents of your **SSL CA certificate** from your MySQL hosting service to the file.
 
 Define the `wp-config.php` source file by copying the content from [this wordpress builder example config file](https://github.com/zeit/now-builders/blob/master/packages/now-wordpress/test/fixtures/20-minimal/wp-config.php) into your `wp-config.php` file.
 
-And finally, define a `now.json` like:
+And finally, define a `now.json` like so:
 
 ```json
 {
@@ -52,20 +53,32 @@ And finally, define a `now.json` like:
 }
 ```
 
+<Caption>
+  A <InlineCode>now.json</InlineCode> file defining the{' '}
+  <GenericLink href="/docs/v2/platform/overview#versioning">
+    Now platform version
+  </GenericLink>{' '}
+  and a build step using the <InlineCode>@now/wordpress</InlineCode> Builder.
+</Caption>
+
+<Note>
+  Don't forget to add <InlineCode>wordpress_db_name</InlineCode>,{' '}
+  <InlineCode>wordpress_db_user</InlineCode>,
+  <InlineCode>wordpress_db_password</InlineCode>, and{' '}
+  <InlineCode>wordpress_db_host</InlineCode> as{' '}
+  <GenericLink href="/docs/v2/deployments/environment-variables-and-secrets/#securing-environment-variables-using-secrets">
+    secrets with now
+  </GenericLink>{' '}
+  to your deployment.
+</Note>
+
 After running `now`, you'll get a URL like this: https://wordpress-8yvrab9k2.now.sh/
 
 ## Technical Details
 
 ### Entrypoint
 
-The entrypoint file must be a `wp-config.php` source file.
-
-### Global variables
-
-All standard PHP variables like `$_GET`, `$_POST` are supported, with the exception of:
-
-- `$_SESSION`
-- `$_FILES`
+The entrypoint file must always be a `wp-config.php` source file.
 
 ### Wordpress Version
 
@@ -87,12 +100,6 @@ This [limit is extendable](/docs/v2/deployments/builders/overview#configuring-ou
   ]
 }`}</Code>
 </Example>
-
-## Technical Details
-
-### Entrypoint
-
-The entrypoint of this Builder is always a `wp-config.php` file.
 
 ## Resources
 
@@ -130,5 +137,4 @@ The goal of the ZEIT Docs is to provide you with all the information you need to
   Discover the deployment basics of Now.
 </Card>
 
-export default ({ children }) => <Doc meta={meta}>{children}</Doc
->
+export default ({ children }) => <Doc meta={meta}>{children}</Doc>
