@@ -30,7 +30,7 @@ Define these two files within a folder like so:
 - `ca.pem` - A source file that contains the private key for securely connecting to a hosted MySQL database.
 - `wp-config.php` - A configuration file for Wordpress.
 
-Define the `ca.pem` source file by copying the contents of your **SSL CA certificate** from your MySQL hosting service to the file.
+Define the `ca.pem` source file by copying the contents of your **SSL CA certificate** from your MySQL cloud hosting provider to the file. Ensure you pick a database location that matches a Now deployment region.
 
 Define the `wp-config.php` source file by copying the content from [this wordpress builder example config file](https://github.com/zeit/now-builders/blob/master/packages/now-wordpress/test/fixtures/20-minimal/wp-config.php) into your `wp-config.php` file.
 
