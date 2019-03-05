@@ -27,7 +27,7 @@ Whenever you want to quickly create a Wordpress site.
 
 Define these two files within a folder like so:
 
-- `ca.pem` - A source file that contains the private key for securely connecting to a hosted MySQL database.
+- `ca.pem` - A source file that contains the database hosting CA certificate for securely connecting to a hosted MySQL database.
 - `wp-config.php` - A configuration file for Wordpress.
 
 Define the `ca.pem` source file by copying the contents of your **SSL CA certificate** from your MySQL cloud hosting provider to the file. Ensure you pick a database location that matches a Now deployment region.
