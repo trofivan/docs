@@ -1,0 +1,175 @@
+import Guide from '~/components/layout/guide'
+import { TerminalInput } from '~/components/text/terminal'
+import Caption from '~/components/text/caption'
+import { InlineCode } from '~/components/text/code'
+import Card from '~/components/card'
+import Note from '~/components/text/note'
+import { GenericLink } from '~/components/text/link'
+
+export const meta = {
+  title: 'Create a Preact Application and Deploy It with Now',
+  description:
+    'Learn how to create a Preact application and deploy it live with ZEIT Now',
+  published: '2019-03-11T03:00:00.860Z',
+  authors: ['unicodeveloper'],
+  url: '/guides/deploying-preact-with-now'
+}
+
+[Preact](https://preactjs.com/) is a smaller, and faster alternative UI library to [React](https://reactjs.org/) with the same API.
+
+In this guide, we will walk you through setting up a Preact application with the [Preact CLI](https://github.com/developit/preact-cli) and how to deploy it with [ZEIT Now](/docs/v2).
+
+## Step 1: Setting Up Your Preact Project
+
+First, set up a Preact project using the [official Preact CLI](https://github.com/developit/preact-cli). The CLI tool scaffolds a Preact PWA application for you quickly, under a minute.
+
+If you don't have the Preact CLI installed globally, use the following command to install it globally:
+
+<TerminalInput>yarn global add preact-cli</TerminalInput>
+<Caption>Installing Preact CLI global to the system user with <GenericLink href="https://yarnpkg.com">Yarn</GenericLink>.</Caption>
+
+After a successful installation, create a new project and `cd` into the project folder. Use the following command in your terminal to do so:
+
+<TerminalInput>preact create default my-project && cd my-project</TerminalInput>
+<Caption>Creating a Preact project with the <InlineCode>default</InlineCode> template and moving into the directory within a terminal.</Caption>
+
+<Note>
+  There are various{' '}
+  <GenericLink href="https://github.com/preactjs-templates">
+    templates
+  </GenericLink>{' '}
+  you can choose from for the Preact CLI tool to generate a project for you
+</Note>
+
+Check out your new Preact project by running the following command to start a development server locally:
+
+<TerminalInput>yarn start</TerminalInput>
+
+## Step 2: Deploy Your Preact Project to Now
+
+Your Preact project is ready to be deployed to Now.
+
+If you have not yet installed Now, you can do so by installing the [Now Desktop app](/docs/v2/getting-started/installation/#now-desktop) which installs Now CLI automatically, or by [installing Now CLI](/docs/v2/getting-started/installation/#now-cli) directly.
+
+For the deployment to build and act as you would expect, you need to create a [`now.json` configuration file](https://zeit.co/docs/v2/deployments/configuration) file to instruct Now on how to build the project with a `build` step.
+
+```json
+{
+  "version": 2,
+  "name": "my-preact-project",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": "build" }
+    }
+  ],
+  "routes": [
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/(.*)\\.(.*)\\.(js|css|json)$", "dest": "/$1.$2.$3" },
+    { "src": "/(.*)\\.(js|css|json)$", "dest": "/$1.$2" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
+```
+
+<Caption>
+  A sample <InlineCode>now.json</InlineCode> configuration file that specifies a
+  Builder and routes for a Preact application.
+</Caption>
+
+This `now.json` file achieves a few things:
+
+- Defines a `version` property to ensure you are using the latest [Now 2.0 platform](/docs/v2/platform/overview) version.
+- Defines a project `name` that your deployments will be sorted under and known by under Now.
+- Defines a [`builds` property](/docs/v2/deployments/builds) that allows Now to use a [Builder](/docs/v2/deployments/builders/overview/) with a specific source target. We used the [`@now/static-build`](/docs/v2/deployments/official-builders/static-build-now-static-build/) to build and deploy a static project. This module takes a Node.js `package.json` file, installs its listed dependencies, executes a configured `now-build` script, and exposes the resulting `dist` directory as the [build output](/docs/v2/deployments/builds/#sources-and-outputs) for serving.
+
+The [`distDir` option](/docs/v2/deployments/official-builders/static-build-now-static-build/#configuring-the-build-output-directory) in the build step instructs Now to identify `build` as the static folder and build output directory.
+
+- Defines a `routes` property as an array that contains `route` objects to route all files to the right place whilst providing a fallback to `index.html` for all other routes so that Preact can handle routing and pages internally.
+
+For the build property that you configured, add a `now-build` script in the generated `package.json` file to specify what command Now will run to build the app in the cloud.
+
+```json
+{
+    "scripts": {
+      ...
+      "now-build": "preact build"
+    },
+}
+```
+
+<Caption>
+  A sample <InlineCode>package.json</InlineCode> file with scripts for running
+  Preact.
+</Caption>
+
+<Note>
+  Don't forget to exclude the <InlineCode>node_modules</InlineCode> folder from
+  being uploaded to Now to enable faster deployment. To do that, add a{' '}
+  <GenericLink href="/guides/prevent-uploading-sourcepaths-with-nowignore/">
+    .nowignore
+  </GenericLink>{' '}
+  file to the root of the project directory and add{' '}
+  <InlineCode>node_modules</InlineCode> to it.
+</Note>
+
+You are now ready to deploy the app with Now:
+
+<TerminalInput>now</TerminalInput>
+
+Once the app is deployed, you will receive a deployment URL similar to the following: https://my-preact-project-ro3oxryae.now.sh/
+
+You can see that our routes were successful by going to the generated `/profile` route directly: https://my-vue-project-ro3oxryae.now.sh/profile
+
+## Bonus: Cache Your Preact Assets
+
+Caching is one of those techniques that makes your site fast when applied properly to your app. You can configure Now's routes within your `now.json` configuration file to set up caching headers.
+
+In the `now.json` configuration file, add the following `routes` property:
+
+```json
+{
+  ...
+  "routes": [
+    { "src": "/assets/(.*)", "headers": {"cache-control": "max-age=31536000,immutable"}, "dest": "/assets/$1" },
+    { "src": "/(.*)\\.(.*)\\.(js|css|json)$", "headers": {"cache-control": "public,max-age=31536000,immutable"}, "dest": "/$1.$2.$3" },
+    { "src": "/sw.js", "headers": {"cache-control": "public,max-age=0,must-revalidate"}, "dest": "/sw.js" },
+    { "src": "/(.*)", "headers": {"cache-control": "max-age=0,must-revalidate"}, "dest": "/index.html" }
+  ]
+}
+```
+
+<Caption>
+  Routes configuration for setting caching headers in a{' '}
+  <InlineCode>now.json</InlineCode> configuration file.
+</Caption>
+
+## Resources
+
+For more information on working with Preact, please refer to [their documentation](https://preactjs.com/).
+
+To configure Now further, please see these additional topics and guides:
+
+<Card title="Deploying Basics" href="/docs/v2/deployments/basics">
+  Deploy any of your applications with ZEIT Now.
+</Card>
+
+<Card
+  title="Aliasing"
+  href="/docs/v2/domains-and-aliases/aliasing-a-deployment/"
+>
+  Learn more about aliasing to your deployments.
+</Card>
+
+<Card title="Routes" href="/docs/v2/deployments/routes">
+  Learn more about how Now uses routes to define behavior of how a request is
+  handled on the routing side.
+</Card>
+
+<Card title="More Guides" href="/guides">
+  See more guides that help you move forward with your projects and deployments.
+</Card>
+
+export default ({ children }) => <Guide meta={meta}>{children}</Guide
+>
