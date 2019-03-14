@@ -173,6 +173,32 @@ And finally, define a `now.json` like so:
 
 After running `now`, you'll get a URL like this: https://wordpress-8yvrab9k2.now.sh/
 
+### Adding Themes and Plugins
+
+You can add themes and plugins to your WordPress site on ZEIT Now by following the instructions below:
+
+For adding themes:
+
+- Download the theme of your choice from the [WordPress Theme Directory](https://wordpress.org/themes/).
+- Unzip the zip file contents.
+- Create a `wp-content/themes` directory in your project root directory and upload the theme folder to it.
+- Then, run the `now` command.
+
+<TerminalInput>now</TerminalInput>
+
+- Once your app has been deployed, navigate to the `/wp-admin` route of your URL and log in to your dashboard. Within the dashboard, go to **Appearance > Themes** and activate your theme.
+
+For adding plugins:
+
+- Download the plugin you want from the [WordPress Plugins Directory](https://wordpress.org/plugins/).
+- Unzip the zip file contents.
+- Create a `wp-content/plugins` directory in your project root directory and upload the plugin folder to it.
+- Run the now command.
+
+<TerminalInput>now</TerminalInput>
+
+- Once your app has been deployed, navigate to the `/wp-admin` route of your URL and log in to your dashboard. Within the dashboard, go to **Plugins > Installed Plugins** and activate your plugin.
+
 ## Technical Details
 
 ### Entrypoint
