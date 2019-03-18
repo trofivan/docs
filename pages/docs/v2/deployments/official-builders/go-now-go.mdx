@@ -56,6 +56,11 @@ Also, the source code of the deployment can be checked by appending `/_src` e.
 
 The entrypoint file must be a `.go` source file with a `Handler` function inside implementing the `net/http` API.
 
+<Note>
+  <InlineCode>@now/go</InlineCode> will automatically detect a `go.mod` file to
+  install dependencies at the entrypoint level.
+</Note>
+
 ### Version
 
 Go 1.x is used.
