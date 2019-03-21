@@ -15,18 +15,19 @@ export const meta = {
   url: '/guides/deploying-preact-with-now'
 }
 
-[Preact](https://preactjs.com/) is a smaller, and faster alternative UI library to [React](https://reactjs.org/) with the same API.
+[Preact](https://preactjs.com/) is a smaller, faster alternative UI library to [React](https://reactjs.org/) with the same API.
 
 In this guide, we will walk you through setting up a Preact application with the [Preact CLI](https://github.com/developit/preact-cli) and how to deploy it with [ZEIT Now](/docs/v2).
 
 ## Step 1: Setting Up Your Preact Project
 
-First, set up a Preact project using the [official Preact CLI](https://github.com/developit/preact-cli). The CLI tool scaffolds a Preact PWA application for you quickly, under a minute.
+First, set up a Preact project using the [official Preact CLI](https://github.com/developit/preact-cli). The CLI tool scaffolds a Preact PWA application for you quickly, in under a minute.
+First, set up a Preact project using the official Preact CLI. The CLI tool scaffolds a Preact PWA application for you quickly, in under a minute.
 
-If you don't have the Preact CLI installed globally, use the following command to install it globally:
+If you don't have the Preact CLI installed, use the following command to get it:
 
 <TerminalInput>yarn global add preact-cli</TerminalInput>
-<Caption>Installing Preact CLI global to the system user with <GenericLink href="https://yarnpkg.com">Yarn</GenericLink>.</Caption>
+<Caption>Installing Preact CLI globally to the system user with <GenericLink href="https://yarnpkg.com">Yarn</GenericLink>.</Caption>
 
 After a successful installation, create a new project and `cd` into the project folder. Use the following command in your terminal to do so:
 
@@ -38,12 +39,12 @@ After a successful installation, create a new project and `cd` into the project 
   <GenericLink href="https://github.com/preactjs-templates">
     templates
   </GenericLink>{' '}
-  you can choose from for the Preact CLI tool to generate a project for you
+  you can choose from for the Preact CLI tool to generate a project for you.
 </Note>
 
 Check out your new Preact project by running the following command to start a development server locally:
 
-<TerminalInput>yarn start</TerminalInput>
+<TerminalInput>yarn dev</TerminalInput>
 
 ## Step 2: Deploy Your Preact Project to Now
 
@@ -51,7 +52,7 @@ Your Preact project is ready to be deployed to Now.
 
 If you have not yet installed Now, you can do so by installing the [Now Desktop app](/docs/v2/getting-started/installation/#now-desktop) which installs Now CLI automatically, or by [installing Now CLI](/docs/v2/getting-started/installation/#now-cli) directly.
 
-For the deployment to build and act as you would expect, you need to create a [`now.json` configuration file](https://zeit.co/docs/v2/deployments/configuration) file to instruct Now on how to build the project with a `build` step.
+For the deployment to build and act as you would expect, you need to create a [`now.json` configuration file](https://zeit.co/docs/v2/deployments/configuration) to instruct Now on how to build the project with a `build` step.
 
 ```json
 {
@@ -118,9 +119,9 @@ You are now ready to deploy the app with Now:
 
 <TerminalInput>now</TerminalInput>
 
-Once the app is deployed, you will receive a deployment URL similar to the following: https://my-preact-project-ro3oxryae.now.sh/
+Once the app is deployed, you will receive a deployment URL similar to the following: https://my-preact-project.now-examples.now.sh
 
-You can see that our routes were successful by going to the generated `/profile` route directly: https://my-vue-project-ro3oxryae.now.sh/profile
+You can see that our routes were successful by going to the generated `/profile` route directly: https://my-preact-project.now-examples.now.sh/profile
 
 ## Bonus: Cache Your Preact Assets
 
@@ -132,9 +133,8 @@ In the `now.json` configuration file, add the following `routes` property:
 {
   ...
   "routes": [
-    { "src": "/assets/(.*)", "headers": {"cache-control": "max-age=31536000,immutable"}, "dest": "/assets/$1" },
-    { "src": "/(.*)\\.(.*)\\.(js|css|json)$", "headers": {"cache-control": "public,max-age=31536000,immutable"}, "dest": "/$1.$2.$3" },
-    { "src": "/sw.js", "headers": {"cache-control": "public,max-age=0,must-revalidate"}, "dest": "/sw.js" },
+    { "src": "/assets/.+|.+(?:js|css|json)", "headers": { "cache-control": "public,max-age=31536000,immutable" } },
+    { "src": "/sw.js", "headers": { "cache-control": "public,max-age=0,must-revalidate" } },
     { "src": "/(.*)", "headers": {"cache-control": "max-age=0,must-revalidate"}, "dest": "/index.html" }
   ]
 }
@@ -171,5 +171,4 @@ To configure Now further, please see these additional topics and guides:
   See more guides that help you move forward with your projects and deployments.
 </Card>
 
-export default ({ children }) => <Guide meta={meta}>{children}</Guide
->
+export default ({ children }) => <Guide meta={meta}>{children}</Guide>
