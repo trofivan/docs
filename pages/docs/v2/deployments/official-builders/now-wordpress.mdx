@@ -17,20 +17,28 @@ export const meta = {
 
 <Tag>Status: Beta</Tag>
 
-The `@now/wordpress` Builder takes in a `wp-config.php` file as an entry point, installs [WordPress](https://wordpress.org/download/), and outputs the result as a [Lambda](/docs/v2/deployments/concepts/lambdas).
+The `@now/wordpress` Builder takes in a `wp-config.php` file as an entrypoint, installs [WordPress](https://wordpress.org/download/), and outputs the result as a [Lambda](/docs/v2/deployments/concepts/lambdas).
 
 ## When to Use It
 
-Whenever you want to quickly create a Wordpress site.
+This Builder is the recommended way to quickly create a WordPress site that you plan to deploy with ZEIT Now.
 
 ### How to Use It
 
-Define these two files within a folder like so:
+Create these two files within a directory like so:
 
 - `ca.pem` - A source file that contains the database hosting CA certificate for securely connecting to a hosted MySQL database.
 - `wp-config.php` - A configuration file for Wordpress.
 
-Define the `ca.pem` source file by copying the contents of your [SSL CA certificate](https://en.wikipedia.org/wiki/Certificate_authority) from your MySQL cloud hosting provider to the file. Ensure you pick a database location that matches a Now deployment region.
+Define the `ca.pem` source file by copying the contents of your [SSL CA certificate](https://en.wikipedia.org/wiki/Certificate_authority) from your MySQL cloud hosting provider to the file.
+
+<Note>
+  Ensure you pick a database location that matches a Now{' '}
+  <GenericLink href="/docs/v2/platform/regions-and-providers/">
+    deployment region
+  </GenericLink>
+  .
+</Note>
 
 Define the `wp-config.php` source file by adding the code below to it:
 
@@ -119,10 +127,11 @@ require_once(ABSPATH . 'wp-settings.php');
 ```
 
 <Caption>
-  A <InlineCode>wp-config.php</InlineCode> file defining the{' '}
+  An example <InlineCode>wp-config.php</InlineCode> file defining the{' '}
   <GenericLink href="https://codex.wordpress.org/Editing_wp-config.php">
-    WordPress config
-  </GenericLink>{' '}
+    WordPress configuration
+  </GenericLink>
+  .
 </Caption>
 
 <Note>
@@ -133,7 +142,7 @@ require_once(ABSPATH . 'wp-settings.php');
   to different unique phrases.
 </Note>
 
-And finally, define a `now.json` like so:
+Finally, define a `now.json` like so:
 
 ```json
 {
@@ -153,7 +162,7 @@ And finally, define a `now.json` like so:
 ```
 
 <Caption>
-  A <InlineCode>now.json</InlineCode> file defining the{' '}
+  An example <InlineCode>now.json</InlineCode> file defining the{' '}
   <GenericLink href="/docs/v2/platform/overview#versioning">
     Now platform version
   </GenericLink>{' '}
@@ -171,29 +180,40 @@ And finally, define a `now.json` like so:
   to your deployment.
 </Note>
 
-After running `now`, you'll get a URL like this: https://wordpress-8yvrab9k2.now.sh/
+<Card
+  title="Document: Deployment Configuration"
+  href="/docs/v2/deployments/configuration/"
+>
+  Read more on how to use the <InlineCode>now.json</InlineCode> file.
+</Card>
+
+At this point you are ready to make a deployment, this can be done by using the `now` command:
+
+<TerminalInput>now</TerminalInput>
+
+After running `now`, you'll receive a URL like this for you to share: https://wordpress-8yvrab9k2.now.sh/
 
 ### Adding Themes and Plugins
 
 You can add themes and plugins to your WordPress site on ZEIT Now by following the instructions below:
 
-For adding themes:
+#### Themes
 
 - Download the theme of your choice from the [WordPress Theme Directory](https://wordpress.org/themes/).
 - Unzip the zip file contents.
-- Create a `wp-content/themes` directory in your project root directory and upload the theme folder to it.
-- Then, run the `now` command.
+- Create a `wp-content/themes` directory in your project root and add the theme folder to it.
+- Run the `now` command.
 
 <TerminalInput>now</TerminalInput>
 
 - Once your app has been deployed, navigate to the `/wp-admin` route of your URL and log in to your dashboard. Within the dashboard, go to **Appearance > Themes** and activate your theme.
 
-For adding plugins:
+#### Plugins
 
 - Download the plugin you want from the [WordPress Plugins Directory](https://wordpress.org/plugins/).
 - Unzip the zip file contents.
-- Create a `wp-content/plugins` directory in your project root directory and upload the plugin folder to it.
-- Run the now command.
+- Create a `wp-content/plugins` directory in your project root and add the plugin folder to it.
+- Run the `now` command.
 
 <TerminalInput>now</TerminalInput>
 
@@ -203,7 +223,7 @@ For adding plugins:
 
 ### Entrypoint
 
-The entry point must always be a `wp-config.php` source file.
+The entrypoint must always be a `wp-config.php` source file.
 
 ### WordPress Version
 
