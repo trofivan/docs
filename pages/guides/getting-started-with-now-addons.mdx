@@ -15,7 +15,7 @@ export const meta = {
   authors: ['arunoda', 'msweeneydev'],
   url: '/guides/getting-started-with-now-addons',
   editUrl: 'pages/guides/getting-started-with-now-addons.mdx',
-  lastEdited: '2019-05-04T12:37:55.000Z'
+  lastEdited: '2019-05-04T17:34:22.000Z'
 }
 
 This guide will help you to extend the capabilities of ZEIT using Addons. We allow you to create Addons for three basic use cases, these are:
@@ -173,7 +173,7 @@ The following flow describes the way you typically use an **OAuth Addon**:
 
 - [Create](#creating-an-addon) and deploy your Addon (for dev you can use localhost)
 - Use your Addon's URL in the **Redirect URI** field when [creating an Addon](#creating-an-addon)
-- Ask your users to visit [https://zeit.co/oauth/authorize?client_id=\<your client id\>](https://zeit.co/oauth/authorize?client_id=<your) to authorize and install the Addon
+- Ask your users to visit [https://zeit.co/oauth/authorize?client_id=\\&lt;your client id>](https://zeit.co/oauth/authorize?client_id=<your) to authorize and install the Addon
 - The users browser will redirect back to your Addon with a code
 - Using that code, you can [exchange a token](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token)
 - You can use that token to access any [API resource](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token) on behalf of the user
