@@ -14,15 +14,15 @@ export const meta = {
   published: '2019-05-03T09:03:14.819Z',
   authors: ['arunoda', 'msweeneydev'],
   url: '/guides/getting-started-with-now-addons',
-  editUrl: 'pages/guides/getting-started-with-now-apps.mdx',
+  editUrl: 'pages/guides/getting-started-with-now-addons.mdx',
   lastEdited: '2019-05-04T12:37:55.000Z'
 }
 
 This guide will help you to extend the capabilities of ZEIT using Addons. We allow you to create Addons for three basic use cases, these are:
 
-1. Standalone Addons - These Addons lives inside [zeit.co](http://zeit.co) and have access to the API with the ability to create a custom UI
-2. OAuth Addons - These support the standard OAuth2 protocol
-3. Hybrid Addons - A mix of both 1 and 2, these are useful for mashups or when you need a long lasting token
+1. **Standalone** - These Addons live inside [zeit.co](http://zeit.co) and have access to the API with the ability to create a custom UI
+2. **OAuth** - These support the standard OAuth2 protocol
+3. **Hybrid** - A mix of both Standalone and OAuth, these are useful for mashups or when you need a long lasting token
 
 ## When to Use
 
@@ -67,7 +67,7 @@ With standalone Addons, you can introduce custom user interfaces inside <https:/
 
 #### **UI Hook**
 
-UI Hook is a key part of this process. It is like a webhook, but you can provide a user interface as the response. It works with HTTP POST just like a webhook.
+The UI Hook is a key part of this process. It is like a webhook, but you can provide a user interface as the response. Like a webhook, it works with HTTP POST.
 
 Below is an example of the code you might write for a UI Hook:
 
@@ -119,17 +119,27 @@ The UI Hooks are HTTP endpoints. Therefore, you can deploy them anywhere with un
 
 Below is a list of what is required to create a HTTP POST based Standalone Addon:
 
-- POST body that contains JSON with [inputs](#ui-hook)
-- Endpoint must have CORS enabled (We talk to it from client side as well)
-- JSX string sent as text with 200 status code
+- A HTTP POST body that contains JSON with [inputs](#ui-hook)
+- An endpoint with CORS enabled (we talk to it from client side as well)
+- A JSX string sent as text with a 200 status code
 
-When developing, you can run your uiHook locally. Pro tip: Use `ctrl + u` to update your Addon after you have made changes to the UI Hook.
-
-When creating the Addon, you can put you the Addons URL in the **UI Hook URI** field. You can update it whenever you need.
-
-See some example Addons: <https://github.com/zeit/apps>
+When creating the Addon, you should put the Addon's URL in the **UI Hook URI** field, this can be updated whenever needed.
 
 #### Component System
+
+To help you create Addons effortlessly and in keeping with ZEIT design, we have created a component system for you to use.
+
+The component system is comprised of React components created with JSX, however, some limitations have been added for safety and use via HTTP.
+
+Below is a list of things to keep in mind when using the component system:
+
+- You should return a JSX string, no NPM modules are supported
+- JavaScript is not supported for security reasons
+- HTML/CSS/StyleJSX are not supported to keep styles inline with other resources
+
+<Card title="Example Addons" href="https://github.com/zeit/apps">
+  Get inspired and learn how best to craft your Addons with these examples.
+</Card>
 
 Read more from the page below:
 
@@ -139,59 +149,66 @@ Read more from the page below:
 
 Every Addon has a public URL with the following format:
 
+You should contact us to list your Addon in our marketplace. To do this, send an email so addons@zeit.co with the following information:
+
+- Information
+- Information
+- Information
+
+Once we have made your Addon available in the marketplace, you will be able to supply your customers with an Addon URL which takes the following format:
+
 <Code>https://front-git-integrations.zeit.sh/app/:slug</Code>
 
-You should contact us to list your Addon in our marketplace.
-
-Here is an example Addon URL: <https://front-git-integrations.zeit.sh/app/counter>
-
-By visiting that URL, users can install the Addon. This makes it easy for your users to install Addons quickly.
+By visiting the URL, users can install the Addon **with a single click**. This makes it easy for your users to install Addons quickly and be productive immediately.
 
 Once the Addon is installed, the UI Hook will be called every time the user views your Addon.
 
 ### 2. OAuth Addons
 
-Once you create an Addon with the above process, you will get a **client_id** and a **client_secret.** These are the OAuth2 client secrets.
+Once you create an Addon with the above process, you will get a **client_id** and a **client_secret.** These are the OAuth2 **client credentials**.
 
-You can then follow our [API docs](https://zeit.co/docs/api#endpoints/oauth2) in order to understand how to use them. This is very similar to creating an OAuth application with another provider.
+You can then read our [API docs](/docs/api#endpoints/oauth2) in order to understand how to use them. This is very similar to creating an OAuth application with another provider.
 
-The following flow describes the typical way you might develop an Addon:
+The following flow describes the way you typically use an **OAuth Addon**:
 
-- Create and deploy your Addon (for dev you can use localhost)
-- Use you Addon's URL in the **Redirect URI** field when [creating an Addon](https://www.notion.so/zeithq/Guide-Zeit-Apps-c0ff5f96bcd54c488637910bd0bb15d4#b4c5f359d6b644d48b5f349feb8ed54c)
-- Ask your users to visit [https://front-git-integrations.zeit.sh/oauth/authorize?client_id=\\&lt;your client id>](https://front-git-integrations.zeit.sh/oauth/authorize?client_id=<your) to authorize and install the Addon
+- [Create](#creating-an-addon) and deploy your Addon (for dev you can use localhost)
+- Use your Addon's URL in the **Redirect URI** field when [creating an Addon](#creating-an-addon)
+- Ask your users to visit [https://zeit.co/oauth/authorize?client_id=\<your client id\>](https://zeit.co/oauth/authorize?client_id=<your) to authorize and install the Addon
 - The users browser will redirect back to your Addon with a code
 - Using that code, you can [exchange a token](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token)
-- You can use that token to access any API resource mentioned in the [https://zeit.co/api](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token) on behalf of the user
-- You should save that token in your Addon (assigning to a user in your Addon)
-- You can ask your users to visit the [authorization url](https://www.notion.so/zeithq/Guide-Zeit-Apps-c0ff5f96bcd54c488637910bd0bb15d4#fd3932c6125c488e8213485be1ee413d) as many times you want. It can used for "Login With ZEIT" feature.
+- You can use that token to access any [API resource](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token) on behalf of the user
+- You should save that token in your Addon by assigning it to a user
 
-**Example App: <https://github.com/zeit/apps/tree/master/oauth-basics>**
+You can ask your users to visit the [authorization url](https://www.notion.so/zeithq/Guide-Zeit-Apps-c0ff5f96bcd54c488637910bd0bb15d4#fd3932c6125c488e8213485be1ee413d) as many times you need. It can used for "Login With ZEIT" feature.
 
-### 3. HyBrid Addons
+<Card
+  title="OAuth Addon"
+  href="https://github.com/zeit/apps/tree/master/oauth-basics"
+>
+  Understand how to implement an OAuth Addon.
+</Card>
 
-This just a mix of both OAuth Addons and Standalone Addons. These Addons can be installed just like a standalone Addon by visiting the public URL.
+### 3. Hybrid Addons
 
-This type of Addons will be pretty useful when building mashups.
+Hybrid Addons are a mix of **both OAuth and Standalone Addons**. These Addons are installed in the same way as a **Standalone Addon**, by visiting the public URL.
 
-- Once installed, user will be redirect to your Addons redirectURI.
-- Then you can get a ZEIT token via [OAuth token exchange](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token) (or simply ignore that)
-- You may authorize with some other third party or with your Addon
-- Then redirect the user back to ZEIT.
-- We add a query string param called callbackUrl when navigating the user to your redirectUri. It is the link to your Addons installation view for that user.
-- Then we render the Addon using uiHook
+The following flow describes the way you typically use a **Hybrid Addon**:
+
+- Once installed, the user is redirected to your Addons **redirectURI**
+- User is authorized through ZEIT [OAuth token exchange](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token) or a third party
+- Once authorized, the user is redirected back to ZEIT
+- **callbackUrl** query string parameter added when navigating the user to your **redirectUri**
+- Addon rendered using the UI Hook
 
 ## Development vs Production
 
-**Development**
+### Local Development
 
-You can develop your Addon locally (with your <http://localhost> URL). You can use localhost URLs for both redirectURI and uiHookURI.
+You can develop your Addon locally using your localhost. You can use localhost URLs for both **redirectURI** and **uiHookURI** for the time required.
 
-Since they are available only on localhost, you will not be able to share you Addon with anyone.
+To provide access to your Addon during local development you can use a tunneling service such as [ngrok](https://ngrok.com) or [localtunnel](https://github.com/localtunnel/localtunnel).
 
-For that, you can use a tunneling service like: <https://ngrok.com/> or [localtunnel](https://github.com/localtunnel/localtunnel)
-
-**Production Deployment**
+### Cloud Deployment
 
 Since these Addons are just HTTP endpoints, you can deploy to anywhere. But deploying to lambda with ZEIT will be your best choice.
 
@@ -202,6 +219,8 @@ Create two different Addons from our integration dashboard for your production a
 You can create any number of Addon you like.
 
 (Just for now, we do not allow you to delete Addons. It will be added soon)
+
+## Example Addons
 
 ## More Resources
 
