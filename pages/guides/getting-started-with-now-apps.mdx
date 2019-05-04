@@ -1,0 +1,233 @@
+import Guide from '~/components/layout/guide'
+import { TerminalInput } from '~/components/text/terminal'
+import { Image } from '~/components/media'
+import Caption from '~/components/text/caption'
+import { InlineCode, Code } from '~/components/text/code'
+import Card from '~/components/card'
+import Note from '~/components/text/note'
+import { GenericLink } from '~/components/text/link'
+
+export const meta = {
+  title: 'Create Addons for Your Customers with ZEIT Now',
+  description:
+    'Learn how to create Addons for ZEIT Now to makes the lives of your customers easier.',
+  published: '2019-05-03T09:03:14.819Z',
+  authors: ['arunoda', 'msweeneydev'],
+  url: '/guides/getting-started-with-now-addons',
+  editUrl: 'pages/guides/getting-started-with-now-apps.mdx',
+  lastEdited: '2019-05-04T12:37:55.000Z'
+}
+
+This guide will help you to extend the capabilities of ZEIT using Addons. We allow you to create Addons for three basic use cases, these are:
+
+1. Standalone Addons - These Addons lives inside [zeit.co](http://zeit.co) and have access to the API with the ability to create a custom UI
+2. OAuth Addons - These support the standard OAuth2 protocol
+3. Hybrid Addons - A mix of both 1 and 2, these are useful for mashups or when you need a long lasting token
+
+## When to Use
+
+Before we look at how to create Addons, let's take a look at which type of Addon is suitable in different situations:
+
+- Login with ZEIT: **OAuth**
+- Add ZEIT Integration inside your Addon/website: **OAuth**
+- Add a database integration(add connection string to a ZEIT project): **Standalone**
+- Add error tracking/perf. monitoring(expose the env. var): **Standalone**
+- List top contributors inside a ZEIT team: **Standalone**
+- Add email support for your domain: **Standalone**
+- An Addon for AI powered face detection(Expose some API endpoint): **Standalone**
+- BitBucket integration: **Hybrid** (Store the **OAuth** token to work with deployments. Use **Standalone** to select BitBucket repositories to build)
+- Create a mashup with users AWS and ZEIT API access: **Hybrid**
+
+## Creating an Addon
+
+Even though we support a variety of use cases, there is only one type of Addon. An Addon can take the desired type based on how it is configured.
+
+To create an Addon, simply visit: [https://zeit.co/dashboard/integrations](/dashboard/integrations) and click the "Create New Addon" button.
+
+When you are creating your Addon, you can enter two URI's:
+
+1. Redirect URI
+2. UI Hook URI
+
+These can be updated at a later date also.
+
+We identify the [type of your Addon](#when-to-use) by looking at those URI's:
+
+- **OAuth** - Redirect URI **only**
+- **Standalone** - UI Hook URI **only**
+- **Hybrid** - **Both** URIs defined
+
+## Writing the Addon
+
+Let's talk about writing the Addon for each of the different use cases outlined above.
+
+### 1. Standalone Addons
+
+With standalone Addons, you can introduce custom user interfaces inside <https://zeit.co>. While rendering that UI, you have access to the token of the user installing the app.
+
+#### **UI Hook**
+
+UI Hook is a key part of this process. It is like a webhook, but you can provide a user interface as the response. It works with HTTP POST just like a webhook.
+
+Below is an example of the code you might write for a UI Hook:
+
+```js
+function databaseProviderUiHook(token, clientState, action) {
+  if (action === 'create-db') {
+    const { dbName } = clientState
+    // create a db inside your Addon
+    // use the token with ZEIT api to add a project level env. var
+    // with the connection URL to your DB
+    return `
+    	<Page>
+        <Notice displayFor="5secs">Database created</Notice>
+        ${getDBListJSX()}
+      </Page>
+    `
+  }
+
+  return `
+    <Page>
+      <Container>
+        <Input name="dbName" label="Name for your DB" />
+        <Button action="create-db">Create DB</Button>
+      </Container>
+      ${getDBListJSX()}
+    </Page>
+  `
+}
+```
+
+<Caption>A UI Hook example for a ZEIT Addon.</Caption>
+
+As shown in the above example, a UI Hook will receive the following:
+
+- `token` - A short lived ZEIT token for the installing users ZEIT account
+- `clientState` - The state of the UI in the client side. Keys are names you passed to Form components such as Input, Select, etc.
+- `action` - Desired action of the user. This is the action prop you pass to a Button. There are other components which support the action prop such as AutoRefresh, Link, etc.
+- `userId` - The user ID of the user accessing your Addon
+- `teamId` - The Team ID of the team who installed the Addon
+- `projectId` - The project ID of the project Your Addon was viewed inside by the user
+
+These inputs can be used to perform the tasks required by your Addon. In the above case this was listing and creating databases.
+
+After your Addon has completed the required tasks, it should return some JSX to populate the interface.
+
+#### HTTP Based
+
+The UI Hooks are HTTP endpoints. Therefore, you can deploy them anywhere with unlimited possibilities.
+
+Below is a list of what is required to create a HTTP POST based Standalone Addon:
+
+- POST body that contains JSON with [inputs](#ui-hook)
+- Endpoint must have CORS enabled (We talk to it from client side as well)
+- JSX string sent as text with 200 status code
+
+When developing, you can run your uiHook locally. Pro tip: Use `ctrl + u` to update your Addon after you have made changes to the UI Hook.
+
+When creating the Addon, you can put you the Addons URL in the **UI Hook URI** field. You can update it whenever you need.
+
+See some example Addons: <https://github.com/zeit/apps>
+
+#### Component System
+
+Read more from the page below:
+
+[Component System](https://www.notion.so/22f47f00f9294289adac8cd92e3cf191)
+
+#### Addon Installation
+
+Every Addon has a public URL with the following format:
+
+<Code>https://front-git-integrations.zeit.sh/app/:slug</Code>
+
+You should contact us to list your Addon in our marketplace.
+
+Here is an example Addon URL: <https://front-git-integrations.zeit.sh/app/counter>
+
+By visiting that URL, users can install the Addon. This makes it easy for your users to install Addons quickly.
+
+Once the Addon is installed, the UI Hook will be called every time the user views your Addon.
+
+### 2. OAuth Addons
+
+Once you create an Addon with the above process, you will get a **client_id** and a **client_secret.** These are the OAuth2 client secrets.
+
+You can then follow our [API docs](https://zeit.co/docs/api#endpoints/oauth2) in order to understand how to use them. This is very similar to creating an OAuth application with another provider.
+
+The following flow describes the typical way you might develop an Addon:
+
+- Create and deploy your Addon (for dev you can use localhost)
+- Use you Addon's URL in the **Redirect URI** field when [creating an Addon](https://www.notion.so/zeithq/Guide-Zeit-Apps-c0ff5f96bcd54c488637910bd0bb15d4#b4c5f359d6b644d48b5f349feb8ed54c)
+- Ask your users to visit [https://front-git-integrations.zeit.sh/oauth/authorize?client_id=\\&lt;your client id>](https://front-git-integrations.zeit.sh/oauth/authorize?client_id=<your) to authorize and install the Addon
+- The users browser will redirect back to your Addon with a code
+- Using that code, you can [exchange a token](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token)
+- You can use that token to access any API resource mentioned in the [https://zeit.co/api](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token) on behalf of the user
+- You should save that token in your Addon (assigning to a user in your Addon)
+- You can ask your users to visit the [authorization url](https://www.notion.so/zeithq/Guide-Zeit-Apps-c0ff5f96bcd54c488637910bd0bb15d4#fd3932c6125c488e8213485be1ee413d) as many times you want. It can used for "Login With ZEIT" feature.
+
+**Example App: <https://github.com/zeit/apps/tree/master/oauth-basics>**
+
+### 3. HyBrid Addons
+
+This just a mix of both OAuth Addons and Standalone Addons. These Addons can be installed just like a standalone Addon by visiting the public URL.
+
+This type of Addons will be pretty useful when building mashups.
+
+- Once installed, user will be redirect to your Addons redirectURI.
+- Then you can get a ZEIT token via [OAuth token exchange](https://zeit.co/docs/api#endpoints/oauth2/exchanging-code-for-an-access-token) (or simply ignore that)
+- You may authorize with some other third party or with your Addon
+- Then redirect the user back to ZEIT.
+- We add a query string param called callbackUrl when navigating the user to your redirectUri. It is the link to your Addons installation view for that user.
+- Then we render the Addon using uiHook
+
+## Development vs Production
+
+**Development**
+
+You can develop your Addon locally (with your <http://localhost> URL). You can use localhost URLs for both redirectURI and uiHookURI.
+
+Since they are available only on localhost, you will not be able to share you Addon with anyone.
+
+For that, you can use a tunneling service like: <https://ngrok.com/> or [localtunnel](https://github.com/localtunnel/localtunnel)
+
+**Production Deployment**
+
+Since these Addons are just HTTP endpoints, you can deploy to anywhere. But deploying to lambda with ZEIT will be your best choice.
+
+**Two Addons**
+
+Create two different Addons from our integration dashboard for your production and dev Addon. With that, you can work with your dev Addon without breaking the production Addon.
+
+You can create any number of Addon you like.
+
+(Just for now, we do not allow you to delete Addons. It will be added soon)
+
+## More Resources
+
+For more information on working with [Now for GitLab](/gitlab), please refer to [the Now for GitLab documentation](/docs/v2/integrations/now-for-gitlab).
+
+To configure Now further, please see these additional topics and guides:
+
+<Card title="Deploying Basics" href="/docs/v2/deployments/basics">
+  Deploy any of your applications with ZEIT Now.
+</Card>
+
+<Card
+  title="Aliasing"
+  href="/docs/v2/domains-and-aliases/aliasing-a-deployment/"
+>
+  Learn more about aliasing to your deployments.
+</Card>
+
+<Card title="Routes" href="/docs/v2/deployments/routes">
+  Learn more about how Now uses routes to define the behavior of how a request
+  is handled on the routing side.
+</Card>
+
+<Card title="More Guides" href="/guides">
+  See more guides that help you move forward with your projects and automatic
+  deployments from Now for GitLab.
+</Card>
+
+export default ({ children }) => <Guide meta={meta}>{children}</Guide>
