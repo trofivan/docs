@@ -8,7 +8,7 @@ import Request from '~/components/api/request'
 
 export const meta = {
   editUrl: 'pages/docs/api/v2/api-docs-mdx/endpoints/projects.mdx',
-  lastEdited: '2019-05-07T16:49:06.000Z'
+  lastEdited: '2019-05-07T20:02:03.000Z'
 }
 
 ## Projects
@@ -187,12 +187,14 @@ Retrieve the environment variables for a given project by passing the project `i
 
 Example response:
 
-<Code lang="json">{`[{
-  "key": "API_SECRET",
-  "value": "@a-new-secret",
-  "installationId": null,
-  "updatedAt": 1557241361455
-}]`}</Code>
+<Code lang="json">{`[
+  {
+    "key": "API_SECRET",
+    "value": "@a-new-secret",
+    "installationId": null,
+    "updatedAt": 1557241361455
+  }
+]`}</Code>
 </Example>
 
 ### Create a project environment variable
@@ -238,19 +240,24 @@ Create a new environment variable for the project by passing the project `id` in
 
 Example response:
 
-<Code lang="json">{`[{
-  "key": "API_SECRET",
-  "value": "@a-new-secret",
-  "installationId": null,
-  "updatedAt": 1557241361455
-}]`}</Code>
+<Code lang="json">{`[
+  {
+    "key": "API_SECRET",
+    "value": "@a-new-secret",
+    "installationId": null,
+    "updatedAt": 1557241361455
+  }
+]`}</Code>
 </Example>
 
 <Note>
   The response will include all environment variables for the project.
 </Note>
 
-<Note>The <InlineCode>installationId</InlineCode> depends on the token used to make the request.</Note>
+<Note>
+  The <InlineCode>installationId</InlineCode> depends on the token used to make
+  the request.
+</Note>
 
 ### Replace a project environment variables
 
@@ -295,12 +302,14 @@ Set all environment variables for the project by passing the project `id` in the
 
 Example response:
 
-<Code lang="json">{`[{
-  "key": "API_SECRET",
-  "value": "@a-new-secret",
-  "installationId": null,
-  "updatedAt": 1557241361455
-}]`}</Code>
+<Code lang="json">{`[
+  {
+    "key": "API_SECRET",
+    "value": "@a-new-secret",
+    "installationId": null,
+    "updatedAt": 1557241361455
+  }
+]`}</Code>
 </Example>
 
 <Note>
