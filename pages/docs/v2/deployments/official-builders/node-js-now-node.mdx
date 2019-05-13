@@ -7,13 +7,15 @@ import Note from '~/components/text/note'
 import Card from '~/components/card'
 import Example from '~/components/example'
 import Tag from '~/components/text/tag'
+import { GenericLink } from '~/components/text/link'
+import { P } from '~/components/text/paragraph'
 
 export const meta = {
   title: 'Node.js Builder (@now/node)',
   description:
     'The official Node.js Builder for ZEIT Now. Deploy serverless Node.js applications with ease.',
   editUrl: 'pages/docs/v2/deployments/official-builders/node-js-now-node.mdx',
-  lastEdited: '2019-04-09T16:21:26.000Z'
+  lastEdited: '2019-05-13T14:03:06.000Z'
 }
 
 <Tag>Status: Stable</Tag>
@@ -50,6 +52,16 @@ module.exports = (req, res) => {
 ```
 
 <Caption>An example serverless Node.js function.</Caption>
+
+<Note>
+  The <InlineCode>@now/node</InlineCode> builder also{' '}
+  <P.B>supports asynchronous functions</P.B>, an example of which can be found
+  in the{' '}
+  <GenericLink href="/docs/v2/deployments/official-builders/node-js-now-node#request-bodies">
+    Request Bodies
+  </GenericLink>{' '}
+  section.
+</Note>
 
 The only step left is to define a build that will take this directory's entrypoint (`index.js`), build it and turn it into a lambda:
 
@@ -116,6 +128,45 @@ The entrypoint of this Builder is always a JavaScript file that exposes a functi
   <InlineCode>@now/node</InlineCode> will automatically detect a `package.json`
   file to install dependencies at the entrypoint level or higher.
 </Note>
+
+### Request Bodies
+
+Handling request bodies in Node.js functions without the use of a framework requires one extra step.
+
+Node.js [request bodies](https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/#request-body) arrive in the format of a [ReadableStream](https://nodejs.org/api/stream.html#stream_class_stream_readable) and must be listened to in order to extract the data.
+
+The code to do this, as taken from the [documentation](https://nodejs.org/ja/docs/guides/anatomy-of-an-http-transaction/#request-body), has been put into an example below:
+
+```js
+const { json } = require('micro')
+
+module.exports = async (req, res) => {
+  let body = []
+  req
+    .on('data', chunk => {
+      body.push(chunk)
+    })
+    .on('end', () => {
+      body = Buffer.concat(body)
+      res.end(`Hello ${body.name}, you just parsed the request body!`)
+    })
+}
+```
+
+Using this code might seem a little tedious. As a result, we recommend the use of a third party library such as [micro](https://github.com/zeit/micro) to parse the request body like so:
+
+```js
+const { json } = require('micro')
+
+module.exports = async (req, res) => {
+  const body = await json(req)
+  res.end(`Hello ${body.name}, you just parsed the request body!`)
+}
+```
+
+<Caption>An example asynchronous Node.js function.</Caption>
+
+For more information on handling request bodies in Node.js, you can [read the short guide](/guides/handling-node-request-body-with-micro) to understand how it works in greater detail.
 
 ### Dependencies Installation
 
