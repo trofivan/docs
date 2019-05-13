@@ -54,7 +54,7 @@ module.exports = (req, res) => {
 <Caption>An example serverless Node.js function.</Caption>
 
 <Note>
-  The <InlineCode>@now/node</InlineCode> builder also{' '}
+  The <InlineCode>@now/node</InlineCode> Builder also{' '}
   <P.B>supports asynchronous functions</P.B>, an example of which can be found
   in the{' '}
   <GenericLink href="/docs/v2/deployments/official-builders/node-js-now-node#request-bodies">
@@ -135,7 +135,7 @@ Handling request bodies in Node.js functions without the use of a framework requ
 
 Node.js [request bodies](https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/#request-body) arrive in the format of a [ReadableStream](https://nodejs.org/api/stream.html#stream_class_stream_readable) and must be listened to in order to extract the data.
 
-The code to do this, as taken from the [documentation](https://nodejs.org/ja/docs/guides/anatomy-of-an-http-transaction/#request-body), has been put into an example below:
+The code to do this, as taken from the [official Node.js documentation](https://nodejs.org/ja/docs/guides/anatomy-of-an-http-transaction/#request-body), has been put into an example below:
 
 ```js
 const { json } = require('micro')
@@ -153,7 +153,7 @@ module.exports = async (req, res) => {
 }
 ```
 
-Using this code might seem a little tedious. As a result, we recommend the use of a third party library such as [micro](https://github.com/zeit/micro) to parse the request body like so:
+Using this code might seem a little tedious. As a result, we recommend the use of a third-party library such as [micro](https://github.com/zeit/micro) to parse the request body like so:
 
 ```js
 const { json } = require('micro')
@@ -164,7 +164,7 @@ module.exports = async (req, res) => {
 }
 ```
 
-<Caption>An example asynchronous Node.js function.</Caption>
+<Caption>An example asynchronous Node.js function using micro to get the request body contents.</Caption>
 
 For more information on handling request bodies in Node.js, you can [read the short guide](/guides/handling-node-request-body-with-micro) to understand how it works in greater detail.
 
