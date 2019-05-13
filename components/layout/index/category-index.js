@@ -18,7 +18,6 @@ class CategoryIndex extends Component {
       />
     )
   }
-
   render() {
     return (
       <li>
