@@ -92,8 +92,15 @@ module.exports = phase => {
   const isDev = phase === PHASE_DEVELOPMENT_SERVER
 
   const config = {
+    target: 'serverless',
+    webpack(cfg) {
+      cfg.output.publicPath = '/_next/'
+      return cfg
+    },
     experimental: {
-      amp: true
+      amp: true,
+      flyingShuttle: true,
+      autoExport: true
     },
 
     // Allow mdx and md files to be pages

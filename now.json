@@ -3,7 +3,7 @@
   "public": true,
   "alias": "docs.zeit.sh",
   "builds": [
-    { "src": "package.json", "use": "@now/static-build" },
+    { "src": "package.json", "use": "@now/next@canary" },
     { "src": "static/*", "use": "@now/static" }
   ],
   "routes": [
@@ -91,19 +91,12 @@
       "status": 301,
       "headers": { "Location": "/docs/v1/clients/$1" }
     },
-    {
-      "src": "/docs/_next(/static/(?:[^/]+/pages|chunks|runtime)/.+)",
-      "headers": { "cache-control": "immutable,max-age=31536000" },
-      "dest": "/_next$1"
-    },
     { "src": "/docs/sitemap.xml", "dest": "/sitemap.xml" },
-    { "src": "/docs/_next(.*)", "dest": "/_next$1" },
     { "src": "/docs/static(.*)", "dest": "/static$1" },
     {
       "src": "/examples/nodejs-express",
       "status": 301,
       "headers": { "Location": "/examples/express" }
-    },
-    { "src": "(.*)", "dest": "$1" }
+    }
   ]
 }
