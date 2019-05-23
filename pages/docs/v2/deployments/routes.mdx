@@ -96,7 +96,7 @@ An example of using the `headers` property to add [shared caching](https://devel
 {
   "version": 2,
   "routes": [
-    { "src": "/images/(.+)", "headers": { "cache-control": "s-maxage=604800" }, "dest": "/images/$1" }
+    { "src": "/images/(.*)", "headers": { "cache-control": "s-maxage=604800" }, "dest": "/images/$1" }
   ]
 }
 ```
