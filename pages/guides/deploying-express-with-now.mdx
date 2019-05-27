@@ -15,12 +15,13 @@ export const meta = {
   lastEdited: '2019-05-24T20:03:07.360Z'
 }
 
-In this guide, we will walk you through the steps necessary to deploy an optimized [Express.js](https://expressjs.com/) app to Now 2.0.
-We will explore the basic concepts of the platform and also a simple but effective way to make your app faster.
+[Express.js](https://expressjs.com) is a [very popular](https://stackoverflow.com/questions/tagged/express) Node.js framework that serves as a base for applications everywhere. Commonly used for monolithic and server-oriented environments, with [Now](https://now.sh) you are still able to use it in a Serverless with a few lines of configuration.
+
+In this guide, we will walk you through the steps necessary to deploy an optimized [Express.js](https://expressjs.com/) app to Now, basic concepts of the platform and also a simple but effective way to make your app faster.
 
 ## Step 1: Builders
 
-Every dynamic deployment in Now 2.0 requires a builder.
+Every dynamic deployment in Now requires a builder.
 You can imagine a builder as being a little helper that will make your code smaller and also produce a set of results.
 In fact, it is a little adapter that will wrap your application in a way that it can easily interface with specific Lambda formats and other requirements of the environment.
 
